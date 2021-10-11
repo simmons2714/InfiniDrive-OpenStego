@@ -1,8 +1,8 @@
 # InfiniDrive w/ OpenStego
-Unlimited Cloud Drive using Amazon Prime Photos(I don't think Amazon does unlimited anymore because of r/datahoarders)
-The reason I made this fork is because uploading these images to any cloud sharing site like Google or Amazon is very suspicious. This way it shouldn't get flagged by bots as being malware.
-Also I added my test.py's because using request wasn't my first attempt at getting random images. So I added these in case anyone needs.
-Also if you change the flower search at like 160 for the scraper you can use other images like a dog.
+Unlimited Cloud Drive using Amazon Prime Photos(I don't think Amazon does unlimited anymore because of r/datahoarders)<br />
+The reason I made this fork is because uploading these images to any cloud sharing site like Google or Amazon is very suspicious. This way it shouldn't get flagged by bots as being malware.<br />
+Also I added my test.py's because using request wasn't my first attempt at getting random images. So I added these in case anyone needs.<br />
+Also if you change the flower search at like 160 for the scraper you can use other images like a dog.<br />
 
 How it's done:
 1. The app opens the file you wanna store in RAW binary
