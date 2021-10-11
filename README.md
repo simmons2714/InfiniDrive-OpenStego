@@ -1,5 +1,8 @@
-# InfiniDrive
-Unlimited Cloud Drive using Amazon Prime Photos
+# InfiniDrive w/ OpenStego
+Unlimited Cloud Drive using Amazon Prime Photos(I don't think Amazon does unlimited anymore because of r/datahoarders)
+The reason I made this fork is because uploading these images to any cloud sharing site like Google or Amazon is very suspicious. This way it shouldn't get flagged by bots as being malware.
+Also I added my test.py's because using request wasn't my first attempt at getting random images. So I added these in case anyone needs.
+Also if you change the flower search at like 160 for the scraper you can use other images like a dog.
 
 How it's done:
 1. The app opens the file you wanna store in RAW binary
@@ -10,6 +13,16 @@ How it's done:
 6. The magic is done 😎
 
 The recovered file has perfect integrity. Sha256 checksum is passed.
+
+
+New Feature:
+1. Added a -d flag to insert the split images into random images download from Unsplash.
+2. The image downloading work is done in imgdl.py
+3. Request is made to get data from Unsplash
+4. Search term is entered and remaining data is queried and saved to a jpg.
+5. Frankly their API does a better job of explaining it.
+6. I used openstego in the command line because no python module I could find would accept an image as the thing to hide. Which is just cover file, hidden file, output file in command line.
+7. It works the same as InfiniDrive so no need to worry about what file names to enter.
 
 ## Installation
 Assure that you have python3.8 installed on your system.
@@ -29,6 +42,11 @@ source ./bin/activate
 #Installing required libraries in the virtual enviroment
 pip3 install -r requirements.txt
 ```
+
+## OpenStego
+OpenStego needs to be installed on your system. Follow your distros instructions on how to do so.
+[https://www.openstego.com/index.html]
+
 ## Quick Start
 ```bash
 #To split a file: 
@@ -50,5 +68,6 @@ pip3 install -r requirements.txt
 | -o <new_output_folder>                              |Change default output folder when splitting |✔
 | --outputfile=<out_file_path>     |Path where output file will be created |✔
 | --imgpxl='side_size'    |Change the size of the output images |✔
+| -q                            |OpenStego flag |✔
 | -h                            |Extended help |✔
 
