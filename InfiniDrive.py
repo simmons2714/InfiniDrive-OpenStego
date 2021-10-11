@@ -3,6 +3,10 @@ import os, sys, io, math, getopt
 from pathlib import Path 
 import PIL.Image as Image
 from PIL.PngImagePlugin import PngInfo
+from imgdl import Unsplash
+import subprocess
+from os import listdir
+from os.path import isfile, join
 
 split_counter=0 #Stores which image is gonna be stored. It will help to set the img title
 split_parts=0 #Stores the number of images needed
@@ -14,6 +18,7 @@ outfolder=Path(filepath).resolve().stem #By default, the folder where the images
 origname="" #Name of the file before being splitted. Will be extracted from PNG's EXIF.
 outputpath="" #Just if you want to modify the default output file path
 filebytessize=0 #To delete from the end passing MD5 check.
+isStego = False
 
 
 def printQuickHelp():
@@ -30,12 +35,13 @@ def printExtendedHelp():
     print('-o, <path_to_img_folder>         To change the default output folder when splitting')
     print('--outputfile=out_file_path       Path where output file will be created')
     print('--imgpxl=side_pixels             To set a different splitting size')
+    print('-d                               Option to stego your split images into other images')
 
 def getArgsOptions(): #Will handle the necessary params from argv
-    global filepath, imgsize, operation_mode, outfolder, MB_IMG_DATA, outputpath
+    global filepath, imgsize, isStego, operation_mode, outfolder, MB_IMG_DATA, outputpath
     argv = sys.argv[1:]
     try:
-        opts, args = getopt.getopt(argv, 'hs:m:o:', ["help","imgpxl=","outputfile="])
+        opts, args = getopt.getopt(argv, 'hqs:m:o:', ["help","imgpxl=","outputfile="])
     except getopt.GetoptError:
         print('Arguments error, just use as below or -h for more options.')
         printQuickHelp()
@@ -58,6 +64,8 @@ def getArgsOptions(): #Will handle the necessary params from argv
             outputpath=arg
         elif opt in ('-o'):
             outfolder=arg
+        elif opt == ('-q'):
+            isStego = True
 
 def guessSplittedParts(path):
     return math.ceil(Path(path).stat().st_size/MB_IMG_DATA)
@@ -133,6 +141,11 @@ def mergeImages(path):
             file_counter=file_counter+1
         
 
+
+jpg_path = 'unsplash/'
+stego_path = 'stegofiles/'
+unstego_path = 'ogfile/'
+
 #Here's where the magic starts ¯\_(ツ)_/¯
 getArgsOptions() #Get options from argv
 if(operation_mode == 'split'):
@@ -140,9 +153,35 @@ if(operation_mode == 'split'):
         split_parts = guessSplittedParts(filepath)
         openFileBinary(filepath)
         print(f"The file has been splitted. You've got the images in folder '{outfolder}'")
+        if(isStego):
+            if not os.path.exists(stego_path):
+                os.mkdir(stego_path)
+            num_images = len([name for name in os.listdir(outfolder) if os.path.isfile(os.path.join(outfolder, name))])
+            scraper = Unsplash("flower", num_images)# set to number of images made
+            scraper.Scraper(1)
+            onlyfiles = [f for f in listdir(jpg_path) if isfile(join(jpg_path, f))]
+            onlyfiles_rom = [f for f in listdir(outfolder) if isfile(join(outfolder, f))]
+            for i, token in enumerate(onlyfiles_rom):
+                #print(token)
+                #print(onlyfiles_png[i])
+                command = f"openstego embed -mf {outfolder}/{token} -cf {jpg_path}{onlyfiles[i]} -sf {stego_path}file{i}.png"
+                subprocess.call(command, shell=True)
+
+            onlyfiles_stego = [f for f in listdir(stego_path) if isfile(join(stego_path, f))]
+            print(onlyfiles_stego)
     else:
         print("A file with that name does not exists here.")    
 elif(operation_mode == 'merge'):
+    if(isStego):
+        num_images = len([name for name in os.listdir(stego_path) if os.path.isfile(os.path.join(stego_path, name))])
+        onlyfiles = [f for f in listdir(stego_path) if isfile(join(stego_path, f))]
+        if not os.path.exists(outfolder):
+                os.mkdir(outfolder)
+        for i, token in enumerate(onlyfiles):
+                #print(token)
+                #print(onlyfiles_png[i])
+                command = f"openstego extract -sf {stego_path}{token} -xd {outfolder}"
+                subprocess.call(command, shell=True)
     if(os.path.exists(outfolder)):
         mergeImages(outfolder)
         print(f'The file has been recovered as {origname} ')
