@@ -14,6 +14,9 @@ How it's done:
 
 The recovered file has perfect integrity. Sha256 checksum is passed.
 
+## Update
+So about not using openstego I found a way to keep the program "in house." [https://github.com/RobinDavid/LSB-Steganography] However it takes an insane amount of time to encode and decode. Well somewhere around 5-10mins(prob longer tbf) based on a 5mb image and 2mb .bin. See you can read the image in cv2 in binary mode then you can use base64 encode function output as the .bin file. Then use that bin file in LSB-Steganography to stuff it inside an image. But because the program took years to execute I never tested if the file kept its integrity for InfiniDrive.<br />
+If someone has a better way to use stego to shove the split images into random pictures and keep it in python let me know. 
 
 New Feature:
 1. Added a -d flag to insert the split images into random images download from Unsplash.
